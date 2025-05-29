@@ -1,12 +1,13 @@
 #ifndef CONCENTRESE_H
 #define CONCENTRESE_H
 
+#include "Juego.h"
 
-class Concentrese
+class Concentrese : public Juego
 {
     public:
         Concentrese();
-        virtual ~Concentrese();
+        void jugar() override;
 
     protected:
 

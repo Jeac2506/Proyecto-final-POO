@@ -1,11 +1,13 @@
 #include "Concentrese.h"
+#include <iostream>
+
+using namespace std;
 
 Concentrese::Concentrese()
 {
-    //ctor
+    //constructor temporal vacio
 }
-
-Concentrese::~Concentrese()
+void Concentrese::jugar()
 {
-    //dtor
+    cout << "Aqui se jugaría concentrese (aun no implementado)." << endl;
 }
