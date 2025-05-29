@@ -1,16 +1,26 @@
 #ifndef AHORCADO_H
 #define AHORCADO_H
 
+#include "Juego.h"
+#include <string>
+#include <vector>
 
-class Ahorcado
+using namespace std;
+
+class Ahorcado : public Juego
 {
     public:
         Ahorcado();
-        virtual ~Ahorcado();
+        void jugar() override; //Acá se implementa el método abstracto
+        void mostrarEstado();
+        bool letraYaUsada(char letra); //para verificar si ya se usó la letra
 
-    protected:
 
     private:
+        string palabraSecreta;
+        string palabraAdivinada;
+        vector<char> letrasUsadas;
+        int intentos;
 };
 
 #endif // AHORCADO_H
