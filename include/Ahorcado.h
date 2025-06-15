@@ -11,9 +11,9 @@ class Ahorcado : public Juego
 {
     public:
         Ahorcado();
-        void jugar() override; //Acá se implementa el método abstracto
-        void mostrarEstado();
-        bool letraYaUsada(char letra); //para verificar si ya se usó la letra
+        void jugar() override; //Aqui se implementa el metodo abstracto
+        void mostrarEstado(); // 
+        bool letraYaUsada(char letra); //para verificar si ya se uso la letra
 
 
     private:

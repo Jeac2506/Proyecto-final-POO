@@ -9,5 +9,5 @@ Concentrese::Concentrese()
 }
 void Concentrese::jugar()
 {
-    cout << "Aqui se jugaría concentrese (aun no implementado)." << endl;
+    cout << "Aqui se jugara concentrese (aun no implementado)." << endl;
 }

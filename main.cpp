@@ -11,11 +11,11 @@ int main()
 
     do
     {
-        cout << "\n=== MENÚ DE JUEGOS ===\n";
+        cout << "\n=== MENU DE JUEGOS ===\n";
         cout << "1. Jugar Ahorcado\n";
         cout << "2. Jugar Concentrese\n";
         cout << "3. Salir\n";
-        cout << "Selecciona una opción: ";
+        cout << "Selecciona una opcion: ";
         cin >> opcion;
 
         switch(opcion)
@@ -30,7 +30,7 @@ int main()
                 cout << "Gracias por jugar.\n";
                 break;
             default:
-                cout << "Opción invalida\n";
+                cout << "Opcion invalida\n";
         }
         if (juego != nullptr)
         {

@@ -19,7 +19,7 @@ Ahorcado::Ahorcado()
 
 void Ahorcado::jugar()
 {
-    bool acierto = false;         // para saber si el jugador adivinó bien en un turno
+    bool acierto = false;         // para saber si el jugador adivina bien en un turno
     vector<char>  letrasIncorrectas;
     char letra;
     while (intentos > 0 && palabraAdivinada != palabraSecreta)
@@ -53,7 +53,7 @@ void Ahorcado::jugar()
     }
 
     if (palabraAdivinada == palabraSecreta)
-        cout << "¡Ganaste! La palabra era: " << palabraSecreta << endl;
+        cout << "ï¿½Ganaste! La palabra era: " << palabraSecreta << endl;
     else
         cout << "Perdiste :c la palabra era: " << palabraSecreta << endl;
 }
