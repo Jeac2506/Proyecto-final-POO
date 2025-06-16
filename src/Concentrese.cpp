@@ -75,4 +75,8 @@ bool Concentrese::todasDescubiertas()
     return true;)
 }
 
-void Concentrese::registrarResultado(const string& jugador, const)
+void Concentrese::registrarResultado(const string& jugador, const strign& resultado, int puntos){
+    ofstream archivo("RegistroPartidas.txt", ios:: app);
+    archivo << "[" << obtenerFechaHora() << "] [" << jugador << "] [juego: Conc] [resultado: "<< resultado << "] [Puntuacion: "]<< puntuacion << "]\n";
+    arcchivo.close();
+}
