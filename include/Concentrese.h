@@ -20,6 +20,7 @@ class Concentrese : public Juego
     void cargarSimbolos();
     void mostrarTablero();
     void TableroDescubiertas();
+    bool todasDescubiertas();
     void registrarResultado(const string &jugador, const string& resultado, int puntos);
 };
 
