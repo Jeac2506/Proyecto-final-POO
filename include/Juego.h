@@ -3,10 +3,11 @@
 
 class Juego
 {
-    public:
-        Juego(); // <--- Agrega esta línea
-        virtual void jugar() = 0; // Metodo puro (obligatorio de implementar en las clases hijas)
-        virtual ~Juego(); // Destructor virtual para evitar errores al borrar punteros
+public:
+    virtual void jugar() = 0;           // Método puro obligatorio
+    virtual ~Juego() = 0;               // Destructor puro
 };
+
+inline Juego::~Juego() {} // Definición vacía del destructor puro
 
 #endif // JUEGO_H
