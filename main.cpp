@@ -39,7 +39,7 @@ int main()
             juego = nullptr;
         }
 
-    }while (opcion != 3);
+    } while (opcion != 3);
 
     return 0;
 }

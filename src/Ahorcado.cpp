@@ -1,26 +1,23 @@
 #include "Ahorcado.h"
 #include <iostream>
 #include <cstdlib> // para rand()
-#include <ctime> // para time()
-
+#include <ctime>   // para time()
 
 using namespace std;
 
 Ahorcado::Ahorcado()
 {
-    //Las palabras que se pueden elegir aleatoriamente
-    vector<string> palabras = {"programacion", "herencia","parcial", "universidad", "computador", "ahorcado"};
-    srand(time(0)); //Una semilla que sirve para la aleatoridad
-    palabraSecreta = palabras[rand() % palabras.size()]; //Selecciona una palabra al azar.
+    // Las palabras que se pueden elegir aleatoriamente
+    vector<string> palabras = {"programacion", "herencia", "parcial", "universidad", "computador", "ahorcado"};
+    srand(time(0)); // Una semilla que sirve para la aleatoridad
+    palabraSecreta = palabras[rand() % palabras.size()]; // Selecciona una palabra al azar.
     palabraAdivinada = string(palabraSecreta.size(), '_');
     intentos = 6;
-
 }
 
 void Ahorcado::jugar()
 {
-    bool acierto = false;         // para saber si el jugador adivina bien en un turno
-    vector<char>  letrasIncorrectas;
+    vector<char> letrasIncorrectas;
     char letra;
     while (intentos > 0 && palabraAdivinada != palabraSecreta)
     {
@@ -35,14 +32,14 @@ void Ahorcado::jugar()
         }
 
         letrasUsadas.push_back(letra);
-        bool acerto = false;
+        bool acierto = false; // Solo una variable acierto
 
         for (size_t i = 0; i < palabraSecreta.size(); i++)
         {
             if (palabraSecreta[i] == letra)
             {
                 palabraAdivinada[i] = letra;
-                acerto = true;
+                acierto = true;
             }
         }
         if (!acierto)
@@ -53,7 +50,7 @@ void Ahorcado::jugar()
     }
 
     if (palabraAdivinada == palabraSecreta)
-        cout << "�Ganaste! La palabra era: " << palabraSecreta << endl;
+        cout << "¡Ganaste! La palabra era: " << palabraSecreta << endl;
     else
         cout << "Perdiste :c la palabra era: " << palabraSecreta << endl;
 }
