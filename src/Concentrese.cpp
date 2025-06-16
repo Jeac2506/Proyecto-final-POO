@@ -80,3 +80,22 @@ void Concentrese::registrarResultado(const string& jugador, const strign& result
     archivo << "[" << obtenerFechaHora() << "] [" << jugador << "] [juego: Conc] [resultado: "<< resultado << "] [Puntuacion: "]<< puntuacion << "]\n";
     arcchivo.close();
 }
+void Concentrese::jugar(){
+    string jugador;
+    cout << "Nombre del jugador: ";
+    cin>> jugador;
+    int intentos = 0, aciertos = 0;
+    while (!todasDescubiertas()){
+        mostrarTablero();
+        int pos1, pos2;
+        cout<< jugador << ", eliga su primera casilla:  ";
+        cin >> pos1;
+        cout << jugador << ", eliga su segunda casilla: ";
+        cin>> pos2;
+        --pos1, --pos2;
+
+        if (pos1 == pos2 || pos < 0 || pos2 < 0 || pos1 >= filas * columnas || pos2 >= filas * columnas || descubiertas [pos1] || descubiertas[pos2]){
+            
+        }
+    }
+}
