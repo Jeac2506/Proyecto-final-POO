@@ -9,20 +9,20 @@ using namespace std;
 
 class Ahorcado : public Juego
 {
-    public:
-        Ahorcado();
-        Ahorcado(bool contraConsola); //
-        void jugar() override; //Aqui se implementa el metodo abstracto
-        void jugarConUsuario(const string& nombreAdivina);// para poder juga contra otro usuario
-        void mostrarEstado();  
-        bool letraYaUsada(char letra); //para verificar si ya se uso la letra
+public:
+    Ahorcado();
+    Ahorcado(bool contraConsola);
+    void jugar() override; // Ejecuta el juego
+    bool jugarConUsuario(const string& nombreAdivina); // Devuelve true si gana, false si pierde
+    void jugarDosJugadores(); // Gestiona el modo dos jugadores con rondas y registro
+    void mostrarEstado();
+    bool letraYaUsada(char letra);
 
-
-    private:
-        string palabraSecreta;
-        string palabraAdivinada;
-        vector<char> letrasUsadas;
-        int intentos;
+private:
+    string palabraSecreta;
+    string palabraAdivinada;
+    vector<char> letrasUsadas;
+    int intentos;
 };
 
 #endif // AHORCADO_H

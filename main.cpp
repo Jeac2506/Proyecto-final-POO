@@ -7,7 +7,6 @@ using namespace std;
 int main()
 {
     int opcion;
-    Juego* juego = nullptr;
 
     do
     {
@@ -20,7 +19,7 @@ int main()
 
         switch(opcion)
         {
-            case 1:
+            case 1: {
                 int modo;
                 cout << "Selecciona el modo de juego:\n";
                 cout << "1. Contra la consola\n";
@@ -28,34 +27,26 @@ int main()
                 cout << "Selecciona una opcion: ";
                 cin >> modo;
                 if (modo == 1){
-                    juego = new Ahorcado(true);
-                    juego ->jugar();
-                    delete juego; // Liberar memoria
-                    juego = nullptr;
-                }else if (modo ==2) {
-                    string nombre;
-                    cout << "Nombre del jugador que adivina: ";
-                    cin >> nombre;
-                    Ahorcado* ahorcado = new Ahorcado(false);
-                    ahorcado->jugarConUsuario(nombre);
-                    delete ahorcado; // Liberar memoria
-                }else {
+                    Ahorcado juego(true);
+                    juego.jugar();
+                } else if (modo == 2) {
+                    Ahorcado().jugarDosJugadores();
+                } else {
                     cout << "Opcion invalida.\n";
-                }break;
-            case 2:
-                juego = new Concentrese();
+                }
                 break;
+            }
+            case 2: {
+                Juego* juego = new Concentrese();
+                juego->jugar();
+                delete juego; // Liberar memoria
+                break;
+            }
             case 3:
                 cout << "Gracias por jugar.\n";
                 break;
             default:
                 cout << "Opcion invalida\n";
-        }
-        if (juego != nullptr)
-        {
-            juego->jugar();
-            delete juego;
-            juego = nullptr;
         }
 
     } while (opcion != 3);
