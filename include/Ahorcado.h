@@ -11,8 +11,10 @@ class Ahorcado : public Juego
 {
     public:
         Ahorcado();
+        Ahorcado(bool contraConsola); //
         void jugar() override; //Aqui se implementa el metodo abstracto
-        void mostrarEstado(); // 
+        void jugarConUsuario(const string& nombreAdivina);// para poder juga contra otro usuario
+        void mostrarEstado();  
         bool letraYaUsada(char letra); //para verificar si ya se uso la letra
 
 
