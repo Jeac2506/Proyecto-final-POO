@@ -16,8 +16,8 @@ struct ResultadoAhorcado {
     int puntos;
 };
 
-// Declaración anticipada
-string obtenerFechaHora();
+// Declaración anticipada (solo declaración, la definición está en main.cpp)
+extern string obtenerFechaHora();
 
 const string partesCuerpo[] = {
     "Cabeza",
@@ -209,14 +209,6 @@ void Ahorcado::jugarDosJugadores()
     } else {
         cout << "Empate!\n";
     }
-}
-
-string obtenerFechaHora() {
-    time_t now = time(0);
-    tm* ltm = localtime(&now);
-    char buffer[30];
-    strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", ltm);
-    return string(buffer);
 }
 
 void Ahorcado::mostrarEstado()

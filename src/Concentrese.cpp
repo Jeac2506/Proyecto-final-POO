@@ -4,16 +4,11 @@
 #include <ctime>         // Para obtener la fecha y hora actual
 #include <cstdlib>       // Para funciones de aleatoriedad (rand, srand)
 #include <vector>        // Para usar el contenedor vector
+#include <string>        // Para usar std::string
 using namespace std;
 
-// Función para obtener la fecha y hora actual en formato string
-string obtenerFechaHora() {
-    time_t now = time(0);                // Obtiene el tiempo actual
-    tm* ltm = localtime(&now);           // Convierte a estructura de tiempo local
-    char buffer[30];
-    strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", ltm); // Formatea la fecha/hora
-    return string(buffer);               // Retorna como string
-}
+// Declaración de la función para obtener la fecha y hora actual en formato string
+extern string obtenerFechaHora(); // La definición está en main.cpp
 
 // Constructor por defecto: inicializa el tablero de 4x4 y carga los símbolos
 Concentrese::Concentrese() : filas(4), columnas(4) {
@@ -21,7 +16,7 @@ Concentrese::Concentrese() : filas(4), columnas(4) {
 }
 
 // Constructor alternativo (no usado aquí, pero permite jugar contra la consola)
-Concentrese::Concentrese(bool contraConsola) : filas(4), columnas(4) {
+Concentrese::Concentrese(bool /*contraConsola*/) : filas(4), columnas(4) {
     cargarSimbolos();
 }
 
@@ -34,7 +29,7 @@ void Concentrese::cargarSimbolos() {
     while (archivo >> simbolo) {
         simbolos.push_back(simbolo);
         simbolos.push_back(simbolo);
-        if (simbolos.size() >= filas * columnas) break; // Solo los necesarios
+        if ((int)simbolos.size() >= filas * columnas) break; // Solo los necesarios
     }
     archivo.close();
     // Mezcla los símbolos usando el algoritmo de Fisher-Yates
