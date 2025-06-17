@@ -37,10 +37,21 @@ int main()
                 break;
             }
             case 2: {
-                Juego* juego = new Concentrese();
-                juego->jugar();
-                delete juego; // Liberar memoria
-                break;
+                int modo;
+                cout << "Seleccione un moddo de juego: \n";
+                cout << "1. Contra la consola\n";
+                cout << "2. Contra otro usuario\n";
+                cout << "Seleccione una opcion: ";
+                cin >> modo;
+                if (modo == 1){
+                    Concentrese juego;
+                    juego.jugar();
+                }else if (modo == 2){
+                    Concentrese juego;
+                    juego.jugarDosJugadores();
+                }else{
+                    cout << "Opcion invalida\n" ;
+                }
             }
             case 3:
                 cout << "Gracias por jugar.\n";
