@@ -82,7 +82,6 @@ void Concentrese::jugar() {
     cout << "¿Cuántos intentos máximos deseas? (recomendado 30): ";
     cin >> maxIntentos;
     int intentos = 0, aciertos = 0;
-    bool gano = false;
     while (!todasDescubiertas() && intentos < maxIntentos) {
         mostrarTablero();
         int pos1, pos2;
@@ -125,7 +124,6 @@ void Concentrese::jugarDosJugadores() {
     cout << "¿Cuántos intentos máximos desean? (recomendado 30): ";
     cin >> maxIntentos;
     int puntos1 = 0, puntos2 = 0, turno = 0, intentos = 0;
-    bool terminado = false;
     while (!todasDescubiertas() && intentos < maxIntentos) {
         mostrarTablero();
         string actual = (turno % 2 == 0) ? jugador1 : jugador2;
