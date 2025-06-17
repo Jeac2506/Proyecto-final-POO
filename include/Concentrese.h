@@ -22,6 +22,7 @@ private:
     void mostrarTablero();
     bool todasDescubiertas();
     void registrarResultado(const string &jugador, const string &resultado, int puntos);
+    int maxIntentos;
 };
 
 #endif // CONCENTRESE_H

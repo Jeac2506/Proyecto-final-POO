@@ -11,12 +11,12 @@ using namespace std;
 extern string obtenerFechaHora(); // La definición está en main.cpp
 
 // Constructor por defecto: inicializa el tablero de 4x4 y carga los símbolos
-Concentrese::Concentrese() : filas(4), columnas(4) {
+Concentrese::Concentrese() : filas(4), columnas(4), maxIntentos(30) {
     cargarSimbolos();
 }
 
 // Constructor alternativo (no usado aquí, pero permite jugar contra la consola)
-Concentrese::Concentrese(bool /*contraConsola*/) : filas(4), columnas(4) {
+Concentrese::Concentrese(bool /*contraConsola*/) : filas(4), columnas(4), maxIntentos(30) {
     cargarSimbolos();
 }
 
@@ -79,8 +79,11 @@ void Concentrese::jugar() {
     string jugador;
     cout << "Nombre del jugador: ";
     cin >> jugador;
+    cout << "¿Cuántos intentos máximos deseas? (recomendado 30): ";
+    cin >> maxIntentos;
     int intentos = 0, aciertos = 0;
-    while (!todasDescubiertas()) {
+    bool gano = false;
+    while (!todasDescubiertas() && intentos < maxIntentos) {
         mostrarTablero();
         int pos1, pos2;
         cout << jugador << ", elige la primera casilla: ";
@@ -103,8 +106,13 @@ void Concentrese::jugar() {
         }
         intentos++;
     }
-    cout << "¡Felicidades " << jugador << "! Terminaste en " << intentos << " turnos.\n";
-    registrarResultado(jugador, "G", aciertos);
+    if (todasDescubiertas()) {
+        cout << "¡Felicidades " << jugador << "! Terminaste en " << intentos << " turnos.\n";
+        registrarResultado(jugador, "G", aciertos);
+    } else {
+        cout << "Se acabaron los intentos. ¡Perdiste!\n";
+        registrarResultado(jugador, "P", aciertos);
+    }
 }
 
 // Lógica del juego para dos jugadores
@@ -114,8 +122,11 @@ void Concentrese::jugarDosJugadores() {
     cin >> jugador1;
     cout << "Nombre del jugador 2: ";
     cin >> jugador2;
-    int puntos1 = 0, puntos2 = 0, turno = 0;
-    while (!todasDescubiertas()) {
+    cout << "¿Cuántos intentos máximos desean? (recomendado 30): ";
+    cin >> maxIntentos;
+    int puntos1 = 0, puntos2 = 0, turno = 0, intentos = 0;
+    bool terminado = false;
+    while (!todasDescubiertas() && intentos < maxIntentos) {
         mostrarTablero();
         string actual = (turno % 2 == 0) ? jugador1 : jugador2;
         cout << actual << ", elige la primera casilla: ";
@@ -138,12 +149,19 @@ void Concentrese::jugarDosJugadores() {
             cout << "No son pareja.\n";
             turno++;
         }
+        intentos++;
     }
     cout << "Puntaje final:\n";
     cout << jugador1 << ": " << puntos1 << " parejas\n";
     cout << jugador2 << ": " << puntos2 << " parejas\n";
     string resultado1 = (puntos1 > puntos2) ? "G" : "P";
     string resultado2 = (puntos2 > puntos1) ? "G" : "P";
-    registrarResultado(jugador1, resultado1, puntos1);
-    registrarResultado(jugador2, resultado2, puntos2);
+    if (todasDescubiertas()) {
+        registrarResultado(jugador1, resultado1, puntos1);
+        registrarResultado(jugador2, resultado2, puntos2);
+    } else {
+        cout << "Se acabaron los intentos. ¡Nadie completó el tablero!\n";
+        registrarResultado(jugador1, "P", puntos1);
+        registrarResultado(jugador2, "P", puntos2);
+    }
 }
