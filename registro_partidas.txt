@@ -1,3 +1,5 @@
 [2025-06-17 00:45:41] [jhoan] [juego: MEM] [resultado: P] [puntuacion: 1]
 [2025-06-17 00:48:18] [jhoan] [juego: MEM] [resultado: P] [puntuacion: 2]
 [2025-06-17 00:48:18] [angel] [juego: MEM] [resultado: P] [puntuacion: 1]
+[2025-06-17 00:56:54] [jhoan] [juego: MEM] [resultado: P] [puntuacion: 2]
+[2025-06-17 00:56:54] [hugo] [juego: MEM] [resultado: P] [puntuacion: 2]
