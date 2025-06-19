@@ -34,7 +34,7 @@ void Concentrese::cargarSimbolos() {
     archivo.close();
     // Mezcla los símbolos usando el algoritmo de Fisher-Yates
     srand(time(0));
-    for (int i = simbolos.size() - 1; i > 0; --i) {
+    for (int i = simbolos.size() - 1; i > 0; --i) { // Recorre el vector de atrás hacia adelante
         int j = rand() % (i + 1);
         string temp = simbolos[i];
         simbolos[i] = simbolos[j];
@@ -82,6 +82,7 @@ void Concentrese::jugar() {
     cout << "¿Cuántos intentos máximos deseas? (recomendado 30): ";
     cin >> maxIntentos;
     int intentos = 0, aciertos = 0;
+    string resultado;
     while (!todasDescubiertas() && intentos < maxIntentos) {
         mostrarTablero();
         int pos1, pos2;
@@ -107,11 +108,14 @@ void Concentrese::jugar() {
     }
     if (todasDescubiertas()) {
         cout << "¡Felicidades " << jugador << "! Terminaste en " << intentos << " turnos.\n";
-        registrarResultado(jugador, "G", aciertos);
+        resultado = "G";
     } else {
         cout << "Se acabaron los intentos. ¡Perdiste!\n";
-        registrarResultado(jugador, "P", aciertos);
+        resultado = "P";
     }
+    registrarResultado(jugador, resultado, aciertos);
+    // Mostrar el registro en consola en el formato solicitado
+    cout << "[" << obtenerFechaHora() << "] [" << jugador << "] [juego: MEM] [resultado: " << resultado << "] [puntuacion: " << aciertos << "]\n";
 }
 
 // Lógica del juego para dos jugadores
@@ -124,6 +128,7 @@ void Concentrese::jugarDosJugadores() {
     cout << "¿Cuántos intentos máximos desean? (recomendado 30): ";
     cin >> maxIntentos;
     int puntos1 = 0, puntos2 = 0, turno = 0, intentos = 0;
+    string resultado1, resultado2;
     while (!todasDescubiertas() && intentos < maxIntentos) {
         mostrarTablero();
         string actual = (turno % 2 == 0) ? jugador1 : jugador2;
@@ -149,17 +154,26 @@ void Concentrese::jugarDosJugadores() {
         }
         intentos++;
     }
+    // Muestra el puntaje final de ambos jugadores
     cout << "Puntaje final:\n";
     cout << jugador1 << ": " << puntos1 << " parejas\n";
     cout << jugador2 << ": " << puntos2 << " parejas\n";
-    string resultado1 = (puntos1 > puntos2) ? "G" : "P";
-    string resultado2 = (puntos2 > puntos1) ? "G" : "P";
+    // Determina el resultado (G: Ganador, P: Perdedor) para cada jugador
+    resultado1 = (puntos1 > puntos2) ? "G" : "P";
+    resultado2 = (puntos2 > puntos1) ? "G" : "P";
     if (todasDescubiertas()) {
+        // Si se descubrieron todas las parejas, registra el resultado de ambos jugadores
         registrarResultado(jugador1, resultado1, puntos1);
         registrarResultado(jugador2, resultado2, puntos2);
     } else {
+        // Si se acabaron los intentos y no se completó el tablero, ambos pierden
         cout << "Se acabaron los intentos. ¡Nadie completó el tablero!\n";
-        registrarResultado(jugador1, "P", puntos1);
-        registrarResultado(jugador2, "P", puntos2);
+        resultado1 = "P";
+        resultado2 = "P";
+        registrarResultado(jugador1, resultado1, puntos1);
+        registrarResultado(jugador2, resultado2, puntos2);
     }
+    // Mostrar el registro en consola en el formato solicitado
+    cout << "[" << obtenerFechaHora() << "] [" << jugador1 << "] [juego: MEM] [resultado: " << resultado1 << "] [puntuacion: " << puntos1 << "]\n";
+    cout << "[" << obtenerFechaHora() << "] [" << jugador2 << "] [juego: MEM] [resultado: " << resultado2 << "] [puntuacion: " << puntos2 << "]\n"; 
 }

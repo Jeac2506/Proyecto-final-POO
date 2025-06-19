@@ -4,8 +4,9 @@
 class Juego
 {
 public:
-    virtual void jugar() = 0;           // Método puro obligatorio
-    virtual ~Juego() = 0;               // Destructor puro
+    virtual void jugar() = 0;                // Método puro obligatorio
+    virtual void jugarDosJugadores() = 0;    // Método puro obligatorio para dos jugadores
+    virtual ~Juego() = 0;                    // Destructor puro
 };
 
 inline Juego::~Juego() {} // Definición vacía del destructor puro
