@@ -69,7 +69,7 @@ bool Concentrese::todasDescubiertas() {
 
 // Registra el resultado de la partida en un archivo de texto
 void Concentrese::registrarResultado(const string& jugador, const string& resultado, int puntuacion) {
-    ofstream archivo("registro_partidas.txt", ios::app); // Abre en modo append
+    ofstream archivo("registropartidasconcent.txt", ios::app); // Abre en modo append
     archivo << "[" << obtenerFechaHora() << "] [" << jugador << "] [juego: MEM] [resultado: " << resultado << "] [puntuacion: " << puntuacion << "]\n";
     archivo.close();
 }

@@ -5,3 +5,5 @@
 [2025-06-17 00:56:54] [hugo] [juego: MEM] [resultado: P] [puntuacion: 2]
 [2025-06-19 00:52:43] [j] [juego: MEM] [resultado: G] [puntuacion: 5]
 [2025-06-19 00:52:43] [f] [juego: MEM] [resultado: P] [puntuacion: 3]
+[2025-06-19 01:07:36] [j] [juego: MEM] [resultado: P] [puntuacion: 0]
+[2025-06-19 01:07:36] [f] [juego: MEM] [resultado: P] [puntuacion: 0]
