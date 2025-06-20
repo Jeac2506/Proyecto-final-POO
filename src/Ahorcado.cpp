@@ -82,27 +82,31 @@ void Ahorcado::jugar() {
     intentos = MaxIntentos;
     char letra;
 
-    while (intentos > 0 && palabraAdivinada != palabraSecreta) {
-        mostrarEstado(); // Muestra el avance del juego
+    while (intentos > 0 && palabraAdivinada != palabraSecreta)
+    {
+        mostrarEstado(); // Muestra el estado actual del juego
+        
+        string entrada;
+        char letra;
+        
         cout << "Ingresa una letra: ";
-        cin >> letra;
+        cin >> entrada;
 
-        // Validar entrada
-        if (!isalpha(letra)) {
-            cout << "Por favor ingresa solo letras del alfabeto.\n";
+        if (entrada.length() != 1 || !isalpha(entrada[0])) {
+            cout << "Error: Solo se puede ingresar UNA letra válida. Intenta de nuevo.\n";
             continue;
         }
-        letra = tolower(letra); // Convertir a minúscula
+
+        letra = entrada[0];
 
         if (letraYaUsada(letra)) {
-            cout << "Ya intentaste con esa letra.\n";
+            cout << "Ya usaste esa letra.\n";
             continue;
         }
 
         letrasUsadas.push_back(letra);
         bool acierto = false;
 
-        // Recorre la palabra para ver si hay coincidencias
         for (size_t i = 0; i < palabraSecreta.size(); i++) {
             if (palabraSecreta[i] == letra) {
                 palabraAdivinada[i] = letra;
@@ -110,13 +114,12 @@ void Ahorcado::jugar() {
             }
         }
 
-        // Si no acertó, se descuenta un intento y muestra parte del cuerpo
         if (!acierto) {
             int parte = MaxIntentos - intentos;
             if (parte < MaxIntentos)
-                cout << "Fallaste, aparece: " << partesCuerpo[parte] << endl;
+                cout << "¡Fallaste! : " << partesCuerpo[parte] << endl;
             intentos--;
-        }
+    }
     }
 
     // Solicita el nombre del jugador para guardar el resultado
