@@ -107,4 +107,4 @@ int main()
     } while (opcion != 3); // El ciclo se repite hasta que el usuario elija salir
 
     return 0; // Fin del programa
-}// perro
+}
