@@ -80,7 +80,7 @@ void Ahorcado::jugar() {
     letrasUsadas.clear();
     palabraAdivinada = string(palabraSecreta.size(), '_');
     intentos = MaxIntentos;
-    char letra;
+    
 
     while (intentos > 0 && palabraAdivinada != palabraSecreta)
     {
