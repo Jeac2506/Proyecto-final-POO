@@ -184,7 +184,7 @@ void Concentrese::dosJugadores() {
             cout << "¡Pareja encontrada!\n";
             descubiertas[pos1] = descubiertas[pos2] = true; // Marca como descubiertas
             if (turno % 2 == 0) puntos1++; else puntos2++; // Suma puntos al jugador actual
-        } else {
+        } else { // ese % 2 es para alternar entre los dos jugadores
             cout << "No son pareja.\n";
             turno++; // Cambia de turno solo si no acierta
         }
