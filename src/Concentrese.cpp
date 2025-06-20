@@ -1,211 +1,235 @@
-#include "Concentrese.h"
-#include <iostream>
-#include <fstream>
-// <ctime> se usa para obtener la hora actual (semilla para srand) el srand es para mezclar los símbolos
-// <cstdlib> se usa para srand y rand (mezclar símbolos aleatoriamente)
-#include <ctime>
-#include <cstdlib>
-#include <vector>
-#include <string>
+#include "Concentrese.h"   
+#include <iostream>         
+#include <fstream>          // Para manejo de archivos (registro y carga de símbolos)
+#include <ctime>            // Para obtener la hora actual y semilla de aleatoriedad
+#include <cstdlib>          // Para funciones rand() y srand()
+#include <vector>           
+#include <string>           
 using namespace std;
 
-// Declaración externa de una función para obtener la fecha y hora actual
+// Función externa que devuelve la fecha y hora actual como string
 extern string obtenerFechaHora();
 
-// Constructor por defecto: inicializa el tablero de 4x4 y los intentos máximos
+// Constructor por defecto: inicializa un tablero 4x4 con 30 intentos
 Concentrese::Concentrese() : filas(4), columnas(4), maxIntentos(30) {
-    cargarSimbolos(); // Carga y mezcla los símbolos para el juego
+    cargarSimbolos();
 }
 
-// Constructor alternativo (no usa el parámetro), igual inicializa el tablero
+// Constructor alternativo: se comporta igual que el por defecto
 Concentrese::Concentrese(bool /*contraConsola*/) : filas(4), columnas(4), maxIntentos(30) {
     cargarSimbolos();
 }
 
-// Carga los símbolos desde un archivo, los duplica y los mezcla aleatoriamente
+// Carga los símbolos del archivo, los duplica para formar parejas, y los mezcla
 void Concentrese::cargarSimbolos() {
-    ifstream archivo("simbolos.txt"); // Abre el archivo de símbolos
+    ifstream archivo("simbolos.txt"); // Abre el archivo que contiene los símbolos
     string simbolo;
-    simbolos.clear(); // Limpia el vector de símbolos
-    // Lee símbolos y los agrega dos veces (para formar parejas)
+    simbolos.clear();
+
+    // Se leen los símbolos y se agregan dos veces al vector (para formar pares)
     while (archivo >> simbolo) {
         simbolos.push_back(simbolo);
         simbolos.push_back(simbolo);
-        if ((int)simbolos.size() >= filas * columnas) break; // Solo los necesarios
+        if ((int)simbolos.size() >= filas * columnas) break; // Limita a 16 elementos (4x4)
     }
     archivo.close();
-    // Mezcla aleatoriamente los símbolos usando Fisher-Yates
+
+    // Mezcla los símbolos usando el algoritmo de Fisher-Yates
     srand(time(0));
     for (int i = simbolos.size() - 1; i > 0; --i) {
         int j = rand() % (i + 1);
         swap(simbolos[i], simbolos[j]);
     }
-    // Inicializa el vector de descubiertas en falso (todas ocultas)
+
+    // Inicializa el vector de casillas descubiertas en "false"
     descubiertas = vector<bool>(filas * columnas, false);
 }
 
-// Muestra el tablero en consola, revelando símbolos descubiertos y ocultando los demás
+// Muestra el tablero actual en pantalla, con casillas numeradas o símbolos descubiertos
 void Concentrese::mostrarTablero() {
     cout << "\nTablero:\n";
     for (int i = 0; i < filas * columnas; ++i) {
-        if (descubiertas[i])
-            cout << " " << simbolos[i] << " "; // Muestra símbolo si está descubierto
-        else {
-            // Muestra el número de la casilla si está oculta
-            if (i + 1 < 10)
-                cout << " " << i + 1 << " ";
-            else
-                cout << i + 1 << " ";
+        if (descubiertas[i]) {
+            cout << " " << simbolos[i] << " ";
+        } else {
+            if (i + 1 < 10) cout << " " << i + 1 << " ";
+            else cout << i + 1 << " ";
         }
-        if ((i + 1) % columnas == 0) cout << endl; // Salto de línea al final de cada fila
+
+        if ((i + 1) % columnas == 0) cout << endl;
     }
 }
 
-// Verifica si todas las casillas han sido descubiertas
+// Revisa si todas las casillas están descubiertas (fin del juego)
 bool Concentrese::todasDescubiertas() {
-    for (size_t i = 0; i < descubiertas.size(); ++i)
-        if (!descubiertas[i]) return false; // Si alguna está oculta, retorna falso
+    for (bool estado : descubiertas) {
+        if (!estado) return false;
+    }
     return true;
 }
 
-// Registra el resultado de la partida en un archivo compartido con otros juegos
+// Registra el resultado de una partida en un archivo de texto
 void Concentrese::registrarResultado(const string& jugador, const string& resultado, int puntuacion) {
-    ofstream archivo("registro_partidas.txt", ios::app); // Abre archivo en modo adjuntar
-    archivo << "[" << obtenerFechaHora() << "] [" << jugador << "] [juego: MEM] [resultado: " << resultado << "] [puntuacion: " << puntuacion << "]\n";
+    ofstream archivo("registro_partidas.txt", ios::app); // Abre en modo agregar
+    archivo << "[" << obtenerFechaHora() << "] [" << jugador << "] [juego: MEM] [resultado: "
+            << resultado << "] [puntuacion: " << puntuacion << "]\n";
     archivo.close();
 }
 
-// Lógica principal para jugar contra la consola (un jugador)
+// Lógica del juego en modo individual (1 jugador)
 void Concentrese::jugar() {
     string jugador;
     cout << "Nombre del jugador: ";
     cin >> jugador;
-    // Solicita el número de intentos máximos
-    cout << "¿Cuántos intentos máximos deseas? (recomendado 30): ";
+
+    // Se pregunta cuántos intentos desea el jugador
+    cout << "¿Cuántos intentos quieres? (recomendado: 30): ";
     while (!(cin >> maxIntentos) || maxIntentos <= 0) {
         cin.clear();
         cin.ignore(1000, '\n');
-        cout << "Ingresa un número válido de intentos: ";
+        cout << "Por favor, ingresa un número válido: ";
     }
+
     int intentos = 0, aciertos = 0;
     string resultado;
-    // Bucle principal del juego: termina si se descubren todas o se acaban los intentos
+
+    // Ciclo principal del juego
     while (!todasDescubiertas() && intentos < maxIntentos) {
-        mostrarTablero(); // Muestra el estado actual del tablero
+        mostrarTablero();
+
         int pos1, pos2;
-        // Solicita la primera casilla al jugador
+        // Primera selección
         cout << jugador << ", elige la primera casilla: ";
         while (!(cin >> pos1) || pos1 < 1 || pos1 > filas * columnas) {
             cin.clear();
             cin.ignore(1000, '\n');
-            cout << "Posición inválida. Ingresa un número válido: ";
+            cout << "Posición inválida. Intenta otra: ";
         }
-        // Solicita la segunda casilla al jugador
+
+        // Segunda selección
         cout << jugador << ", elige la segunda casilla: ";
         while (!(cin >> pos2) || pos2 < 1 || pos2 > filas * columnas) {
             cin.clear();
             cin.ignore(1000, '\n');
-            cout << "Posición inválida. Ingresa un número válido: ";
+            cout << "Posición inválida. Intenta otra: ";
         }
-        --pos1; --pos2; // Ajusta a índice base 0
-        // Verifica que las posiciones sean válidas y no descubiertas
+
+        pos1--; pos2--; // Ajuste a índice base 0
+
+        // Validación de jugadas
         if (pos1 == pos2 || descubiertas[pos1] || descubiertas[pos2]) {
-            cout << "Posiciones inválidas. Intenta de nuevo.\n";
+            cout << "Casillas no válidas. Repite tu intento.\n";
             continue;
         }
-        // Muestra los símbolos seleccionados
+
         cout << "Descubres: " << simbolos[pos1] << " y " << simbolos[pos2] << endl;
+
+        // Verifica si hay coincidencia
         if (simbolos[pos1] == simbolos[pos2]) {
-            cout << "¡Pareja encontrada!\n";
-            descubiertas[pos1] = descubiertas[pos2] = true; // Marca como descubiertas
+            cout << "¡Encontraste una pareja!\n";
+            descubiertas[pos1] = descubiertas[pos2] = true;
             aciertos++;
         } else {
-            cout << "No son pareja.\n";
+            cout << "No coinciden.\n";
         }
+
         intentos++;
     }
-    // Determina el resultado y lo muestra
+
+    // Fin de la partida: gana o pierde según descubiertos
     if (todasDescubiertas()) {
-        cout << "¡Felicidades " << jugador << "! Terminaste en " << intentos << " turnos.\n";
-        resultado = "G"; // Ganador
+        cout << "¡Bien hecho " << jugador << "! Ganaste en " << intentos << " intentos.\n";
+        resultado = "G";
     } else {
-        cout << "Se acabaron los intentos. ¡Perdiste!\n";
-        resultado = "P"; // Perdedor
+        cout << "Se acabaron los intentos. No lograste completar el tablero.\n";
+        resultado = "P";
     }
-    registrarResultado(jugador, resultado, aciertos); // Registra el resultado
-    // Muestra el registro en pantalla
-    cout << "[" << obtenerFechaHora() << "] [" << jugador << "] [juego: MEM] [resultado: " << resultado << "] [puntuacion: " << aciertos << "]\n";
+
+    registrarResultado(jugador, resultado, aciertos);
+
+    cout << "[" << obtenerFechaHora() << "] [" << jugador << "] [juego: MEM] [resultado: "
+         << resultado << "] [puntuacion: " << aciertos << "]\n";
 }
 
-// Lógica principal para jugar dos jugadores alternando turnos
+// Lógica para modo dos jugadores (turnos alternos)
 void Concentrese::dosJugadores() {
     string jugador1, jugador2;
     cout << "Nombre del jugador 1: ";
     cin >> jugador1;
     cout << "Nombre del jugador 2: ";
     cin >> jugador2;
-    // Solicita el número de intentos máximos
-    cout << "¿Cuántos intentos máximos desean? (recomendado 30): ";
+
+    // Pregunta cuántos intentos usarán en total
+    cout << "¿Cuántos intentos desean en total? (recomendado: 30): ";
     while (!(cin >> maxIntentos) || maxIntentos <= 0) {
         cin.clear();
         cin.ignore(1000, '\n');
         cout << "Ingresa un número válido de intentos: ";
     }
+
     int puntos1 = 0, puntos2 = 0, turno = 0, intentos = 0;
     string resultado1, resultado2;
-    // Bucle principal del juego para dos jugadores
+
+    // Ciclo principal del juego por turnos
     while (!todasDescubiertas() && intentos < maxIntentos) {
-        mostrarTablero(); // Muestra el tablero
-        string actual = (turno % 2 == 0) ? jugador1 : jugador2; // Alterna jugador
+        mostrarTablero();
+        string actual = (turno % 2 == 0) ? jugador1 : jugador2;
+
         int pos1, pos2;
-        // Solicita la primera casilla
         cout << actual << ", elige la primera casilla: ";
         while (!(cin >> pos1) || pos1 < 1 || pos1 > filas * columnas) {
             cin.clear();
             cin.ignore(1000, '\n');
-            cout << "Posición inválida. Ingresa un número válido: ";
+            cout << "Posición inválida. Intenta otra: ";
         }
-        // Solicita la segunda casilla
+
         cout << actual << ", elige la segunda casilla: ";
         while (!(cin >> pos2) || pos2 < 1 || pos2 > filas * columnas) {
             cin.clear();
             cin.ignore(1000, '\n');
-            cout << "Posición inválida. Ingresa un número válido: ";
+            cout << "Posición inválida. Intenta otra: ";
         }
-        --pos1; --pos2; // Ajusta a índice base 0
-        // Verifica que las posiciones sean válidas y no descubiertas
+
+        pos1--; pos2--;
+
         if (pos1 == pos2 || descubiertas[pos1] || descubiertas[pos2]) {
-            cout << "Posiciones inválidas. Intenta de nuevo.\n";
+            cout << "Casillas inválidas. Pierdes el turno.\n";
             continue;
         }
-        // Muestra los símbolos seleccionados
+
         cout << "Descubres: " << simbolos[pos1] << " y " << simbolos[pos2] << endl;
+
         if (simbolos[pos1] == simbolos[pos2]) {
-            cout << "¡Pareja encontrada!\n";
-            descubiertas[pos1] = descubiertas[pos2] = true; // Marca como descubiertas
-            if (turno % 2 == 0) puntos1++; else puntos2++; // Suma puntos al jugador actual
-        } else { // ese % 2 es para alternar entre los dos jugadores
-            cout << "No son pareja.\n";
-            turno++; // Cambia de turno solo si no acierta
+            cout << "¡Bien! Encontraste una pareja.\n";
+            descubiertas[pos1] = descubiertas[pos2] = true;
+            if (turno % 2 == 0) puntos1++;
+            else puntos2++;
+        } else {
+            cout << "No es pareja.\n";
+            turno++;  // Solo cambia si falló
         }
+
         intentos++;
     }
-    // Muestra el puntaje final de ambos jugadores
-    cout << "Puntaje final:\n";
+
+    // Muestra el resultado final de la partida
+    cout << "\nPuntaje final:\n";
     cout << jugador1 << ": " << puntos1 << " parejas\n";
     cout << jugador2 << ": " << puntos2 << " parejas\n";
-    // Determina el resultado de cada jugador
-    resultado1 = (puntos1 > puntos2) ? "G" : "P";
-    resultado2 = (puntos2 > puntos1) ? "G" : "P";
+
     if (!todasDescubiertas()) {
-        cout << "Se acabaron los intentos. ¡Nadie completó el tablero!\n";
-        resultado1 = "P";
-        resultado2 = "P";
+        cout << "Nadie completó el tablero. Empate forzado.\n";
+        resultado1 = resultado2 = "P";
+    } else {
+        resultado1 = (puntos1 > puntos2) ? "G" : "P";
+        resultado2 = (puntos2 > puntos1) ? "G" : "P";
     }
-    // Registra los resultados de ambos jugadores
+
     registrarResultado(jugador1, resultado1, puntos1);
     registrarResultado(jugador2, resultado2, puntos2);
-    // Muestra el registro en pantalla
-    cout << "[" << obtenerFechaHora() << "] [" << jugador1 << "] [juego: MEM] [resultado: " << resultado1 << "] [puntuacion: " << puntos1 << "]\n";
-    cout << "[" << obtenerFechaHora() << "] [" << jugador2 << "] [juego: MEM] [resultado: " << resultado2 << "] [puntuacion: " << puntos2 << "]\n";
+
+    cout << "[" << obtenerFechaHora() << "] [" << jugador1 << "] [juego: MEM] [resultado: "
+         << resultado1 << "] [puntuacion: " << puntos1 << "]\n";
+    cout << "[" << obtenerFechaHora() << "] [" << jugador2 << "] [juego: MEM] [resultado: "
+         << resultado2 << "] [puntuacion: " << puntos2 << "]\n";
 }

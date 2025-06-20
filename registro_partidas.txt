@@ -1,1 +1,6 @@
 
+[2025-06-20 14:01:09] [jhoan] [juego: AH] [resultado: G] [puntuacion: 1]
+[2025-06-20 14:01:52] [k] [juego: AH] [resultado: G] [puntuacion: 10]
+[2025-06-20 14:19:26] [j] [juego: AH] [resultado: P] [puntuacion: 0]
+[2025-06-20 14:19:37] [k] [juego: AH] [resultado: P] [puntuacion: 0]
+[2025-06-20 14:19:50] [j] [juego: AH] [resultado: G] [puntuacion: 10]

@@ -1,270 +1,258 @@
-#include "Ahorcado.h"
-#include <iostream>
-#include <cstdlib>
-#include <ctime>
-#include <fstream>
-#include <vector>
-#include <string>
+#include "Ahorcado.h"     
+#include <iostream>       
+#include <cstdlib>        // Para rand() y srand()
+#include <ctime>          // Para obtener la hora actual (semilla de aleatoriedad)
+#include <fstream>        
+#include <vector>         
+#include <string>         
 using namespace std;
 
-// Estructura para guardar el resultado de una partida de ahorcado
+// el ran se usa para generar números aleatorios
+// y srand se usa para generar números aleatorios basados en esa semilla
+
+// Estructura que guarda los datos de una partida jugada
 struct ResultadoAhorcado {
-    string fecha;      // Fecha y hora de la partida
-    string jugador;    // Nombre del jugador
-    string juego;      // Código del juego (AH)
-    string resultado;  // "G" para ganar, "P" para perder
-    int puntos;        // Puntos obtenidos
+    string fecha;
+    string jugador;
+    string juego;
+    string resultado;
+    int puntos;
 };
 
-// Declaración de función externa para obtener la fecha y hora actual
+// Declaración de función externa que devuelve la fecha y hora actual como string
 extern string obtenerFechaHora();
 
-// Arreglo con las partes del cuerpo del ahorcado
+// Arreglo con las partes del cuerpo del personaje del ahorcado
 const string partesCuerpo[] = {
-    "Cabeza",
-    "Tronco",
-    "Brazo Izquierdo",
-    "Brazo Derecho",
-    "Pierna Izquierda",
-    "Pierna Derecha"
+    "Cabeza", "Tronco", "Brazo Izquierdo", "Brazo Derecho", "Pierna Izquierda", "Pierna Derecha"
 };
+
 const int MaxIntentos = 6; // Número máximo de intentos permitidos
 
-// Función para registrar el resultado de una partida en un archivo
+// Guarda el resultado de una partida en el archivo de texto
 void registrarResultadoAhorcado(const ResultadoAhorcado& res) {
-    ofstream archivo("registro_partidas.txt", ios::app);
-    archivo << "[" << res.fecha << "] [" << res.jugador << "] [juego: " << res.juego << "] [resultado: " << res.resultado << "] [puntuacion: " << res.puntos << "]\n";
+    ofstream archivo("registro_partidas.txt", ios::app); // Abre archivo en modo agregar
+    archivo << "[" << res.fecha << "] [" << res.jugador << "] [juego: " << res.juego
+            << "] [resultado: " << res.resultado << "] [puntuacion: " << res.puntos << "]\n";
     archivo.close();
 }
 
-// Constructor de la clase Ahorcado
-Ahorcado::Ahorcado(bool contraConsola){
-    if (contraConsola){
-        // Si se juega contra la consola, se elige una palabra aleatoria de un archivo
+// Constructor que recibe un booleano para jugar contra la consola o contra otro jugador
+Ahorcado::Ahorcado(bool contraConsola) {
+    if (contraConsola) {
+        // Si se juega contra la consola, se carga una palabra aleatoria desde archivo
         ifstream archivo("palabras.txt");
         vector<string> palabras;
         string palabra;
-        // Se leen todas las palabras del archivo usando un bucle while
+
         while (archivo >> palabra) {
             palabras.push_back(palabra);
         }
         archivo.close();
-        srand(time(0)); // Inicializa la semilla para números aleatorios
-        palabraSecreta = palabras[rand() % palabras.size()]; // Selecciona una palabra al azar
-    }
-    else {
-        // Si no es contra la consola, el usuario ingresa la palabra secreta
+
+        srand(time(0)); // Inicializa la semilla aleatoria con la hora actual
+        palabraSecreta = palabras[rand() % palabras.size()];
+    } else {
+        // Si es entre jugadores, uno de ellos ingresa la palabra secreta
         cout << "Ingrese la palabra secreta: ";
         cin >> palabraSecreta;
-        cout << string(50, '\n'); // Limpia la pantalla
+        cout << string(50, '\n'); // Limpia la pantalla para que el otro no vea
     }
-    palabraAdivinada = string(palabraSecreta.size(), '_'); // Inicializa la palabra adivinada con guiones bajos
-    letrasUsadas.clear(); // Limpia las letras usadas
-    intentos = MaxIntentos; // Reinicia los intentos
+
+    palabraAdivinada = string(palabraSecreta.size(), '_');
+    letrasUsadas.clear();
+    intentos = MaxIntentos;
 }
 
-// Constructor por defecto
+// Constructor por defecto (puede usarse para pruebas)
 Ahorcado::Ahorcado() {}
 
-
-// Método para jugar una partida de ahorcado (modo consola)
-void Ahorcado::jugar()
-{
+// Modo de juego individual (contra la consola o jugador oculto)
+void Ahorcado::jugar() {
     letrasUsadas.clear();
     palabraAdivinada = string(palabraSecreta.size(), '_');
     intentos = MaxIntentos;
     char letra;
-    // Bucle principal del juego: se repite mientras haya intentos y no se adivine la palabra
-    while (intentos > 0 && palabraAdivinada != palabraSecreta)
-    {
-        mostrarEstado(); // Muestra el estado actual del juego
+
+    while (intentos > 0 && palabraAdivinada != palabraSecreta) {
+        mostrarEstado(); // Muestra el avance del juego
         cout << "Ingresa una letra: ";
         cin >> letra;
 
-        if (letraYaUsada(letra))
-        {
-            cout << "Ya usaste esa letra.\n";
-            continue; // Si la letra ya fue usada, se salta a la siguiente iteración
-        }
-
-        letrasUsadas.push_back(letra);
-        bool acierto = false;
-
-        // Bucle for para comprobar si la letra está en la palabra secreta
-        for (size_t i = 0; i < palabraSecreta.size(); i++)
-        {
-            if (palabraSecreta[i] == letra)
-            {
-                palabraAdivinada[i] = letra;
-                acierto = true;
-            }
-        }
-        if (!acierto)
-        {
-            int parte = MaxIntentos - intentos;
-            if (parte < MaxIntentos)
-                cout << "¡Fallaste! : " << partesCuerpo[parte] << endl;
-            intentos--; // Se reduce el número de intentos si no acertó
-        }
-    }
-
-    string jugador;
-    cout << "Ingresa tu nombre para el registro: ";
-    cin >> jugador;
-
-    // Se registra el resultado de la partida
-    ResultadoAhorcado res;
-    res.fecha = obtenerFechaHora();
-    res.jugador = jugador;
-    res.juego = "AH";
-    if (palabraAdivinada == palabraSecreta) {
-        cout << "¡Ganaste! La palabra era: " << palabraSecreta << endl;
-        res.resultado = "G";
-    } else {
-        cout << "Perdiste :c la palabra era: " << palabraSecreta << endl;
-        res.resultado = "P";
-    }
-    res.puntos = intentos;
-    registrarResultadoAhorcado(res);
-    cout << "[" << res.fecha << "] [" << res.jugador << "] [juego: AH] [resultado: " << res.resultado << "] [puntuacion: " << res.puntos << "]\n";
-}
-
-// Método para jugar con otro usuario (devuelve true si gana, false si pierde)
-bool Ahorcado::jugarConUsuario(const string& nombreAdivina){
-    letrasUsadas.clear();
-    palabraAdivinada = string(palabraSecreta.size(), '_');
-    intentos = MaxIntentos;
-    char letra;
-    // Bucle principal del juego
-    while (intentos > 0 && palabraAdivinada != palabraSecreta)
-    {
-        mostrarEstado();
-        cout << nombreAdivina << ", ingresa una letra: ";
-        cin >> letra;
-
-        if (letraYaUsada(letra))
-        {
-            cout << "Ya usaste esa letra.\n";
+        if (letraYaUsada(letra)) {
+            cout << "Ya intentaste con esa letra.\n";
             continue;
         }
 
         letrasUsadas.push_back(letra);
         bool acierto = false;
 
-        // Bucle for para comprobar si la letra está en la palabra secreta
-        for (size_t i = 0; i < palabraSecreta.size(); i++)
-        {
-            if (palabraSecreta[i] == letra)
-            {
+        // Recorre la palabra para ver si hay coincidencias
+        for (size_t i = 0; i < palabraSecreta.size(); i++) {
+            if (palabraSecreta[i] == letra) {
                 palabraAdivinada[i] = letra;
                 acierto = true;
             }
         }
-        if (!acierto)
-        {
+
+        // Si no acertó, se descuenta un intento y muestra parte del cuerpo
+        if (!acierto) {
             int parte = MaxIntentos - intentos;
             if (parte < MaxIntentos)
-                cout << "¡Fallaste! : " << partesCuerpo[parte] << endl;
+                cout << "Fallaste, aparece: " << partesCuerpo[parte] << endl;
             intentos--;
         }
     }
 
-    // Solo devuelve el resultado, no imprime ni registra
+    // Solicita el nombre del jugador para guardar el resultado
+    string nombre;
+    cout << "Escribe tu nombre para el registro: ";
+    cin >> nombre;
+
+    ResultadoAhorcado res;
+    res.fecha = obtenerFechaHora();
+    res.jugador = nombre;
+    res.juego = "AH";
+    res.resultado = (palabraAdivinada == palabraSecreta) ? "G" : "P";
+    res.puntos = intentos;
+
+    if (res.resultado == "G") {
+        cout << "¡Ganaste! La palabra era: " << palabraSecreta << endl;
+    } else {
+        cout << "Perdiste :( La palabra era: " << palabraSecreta << endl;
+    }
+
+    registrarResultadoAhorcado(res);
+
+    // Muestra el resultado por consola
+    cout << "[" << res.fecha << "] [" << res.jugador << "] [juego: AH] [resultado: "
+         << res.resultado << "] [puntuacion: " << res.puntos << "]\n";
+}
+
+// Modo de juego donde un jugador adivina la palabra que ingresó otro
+bool Ahorcado::jugarConUsuario(const string& nombreAdivina) {
+    letrasUsadas.clear();
+    palabraAdivinada = string(palabraSecreta.size(), '_');
+    intentos = MaxIntentos;
+    char letra;
+
+    while (intentos > 0 && palabraAdivinada != palabraSecreta) {
+        mostrarEstado();
+        cout << nombreAdivina << ", escribe una letra: ";
+        cin >> letra;
+
+        if (letraYaUsada(letra)) {
+            cout << "Esa ya la usaste.\n";
+            continue;
+        }
+
+        letrasUsadas.push_back(letra);
+        bool acierto = false;
+
+        for (size_t i = 0; i < palabraSecreta.size(); i++) {
+            if (palabraSecreta[i] == letra) {
+                palabraAdivinada[i] = letra;
+                acierto = true;
+            }
+        }
+
+        if (!acierto) {
+            int parte = MaxIntentos - intentos;
+            if (parte < MaxIntentos)
+                cout << "Fallaste: " << partesCuerpo[parte] << endl;
+            intentos--;
+        }
+    }
+
+    // Retorna si ganó o no, sin registrar aún
     return palabraAdivinada == palabraSecreta;
 }
 
-// Método para jugar en modo dos jugadores
-void Ahorcado::dosJugadores()
-{
-    string nombreJugador1, nombreJugador2;
-    cout << "Ingrese el nombre del jugador 1: ";
-    cin >> nombreJugador1;
-    cout << "Ingrese el nombre del jugador 2: ";
-    cin >> nombreJugador2;
-    
+// Modo para jugar entre dos personas en varias rondas
+void Ahorcado::dosJugadores() {
+    string nombre1, nombre2;
+    cout << "Nombre del jugador 1: ";
+    cin >> nombre1;
+    cout << "Nombre del jugador 2: ";
+    cin >> nombre2;
+
     int rondas;
-    // Bucle do-while para validar el número de rondas
-    do{
+    do {
         cout << "¿Cuántas rondas quieren jugar? (1-5): ";
         cin >> rondas;
-    }while (rondas < 1 || rondas > 5);
+    } while (rondas < 1 || rondas > 5);
 
     int puntos1 = 0, puntos2 = 0;
     vector<ResultadoAhorcado> resultados;
 
-    // Bucle for para jugar varias rondas
-    for (int ronda = 1; ronda <= rondas; ++ronda){
-        cout << "\n--- Ronda " << ronda <<" ---\n";
+    for (int ronda = 1; ronda <= rondas; ++ronda) {
+        cout << "\nRonda " << ronda << ":\n";
 
-        // Jugador 1 pone palabra, jugador 2 adivina
-        cout << nombreJugador1 << ", ingrese la palabra secreta para que " << nombreJugador2 << " la adivine.\n";
-        Ahorcado* ahorcado1 = new Ahorcado(false);
-        bool adivino2 = ahorcado1->jugarConUsuario(nombreJugador2);
-        int puntosRonda2 = adivino2 ? 10 : 0;
-        puntos2 += puntosRonda2;
+        // Turno jugador 2 adivina
+        cout << nombre1 << " escribe la palabra para que " << nombre2 << " adivine.\n";
+        Ahorcado* juego1 = new Ahorcado(false);
+        bool adivino2 = juego1->jugarConUsuario(nombre2);
+        delete juego1;
+
         ResultadoAhorcado res2;
         res2.fecha = obtenerFechaHora();
-        res2.jugador = nombreJugador2;
+        res2.jugador = nombre2;
         res2.juego = "AH";
         res2.resultado = adivino2 ? "G" : "P";
-        res2.puntos = puntosRonda2;
+        res2.puntos = adivino2 ? 10 : 0;
+        puntos2 += res2.puntos;
         resultados.push_back(res2);
-        delete ahorcado1;
 
-        // Jugador 2 pone palabra, jugador 1 adivina
-        cout << nombreJugador2 << ", ingrese la palabra secreta para que " << nombreJugador1 << " la adivine.\n";
-        Ahorcado* ahorcado2 = new Ahorcado(false);
-        bool adivino1 = ahorcado2->jugarConUsuario(nombreJugador1);
-        int puntosRonda1 = adivino1 ? 10 : 0;
-        puntos1 += puntosRonda1;
+        // Turno jugador 1 adivina
+        cout << nombre2 << " escribe la palabra para que " << nombre1 << " adivine.\n";
+        Ahorcado* juego2 = new Ahorcado(false);
+        bool adivino1 = juego2->jugarConUsuario(nombre1);
+        delete juego2;
+
         ResultadoAhorcado res1;
         res1.fecha = obtenerFechaHora();
-        res1.jugador = nombreJugador1;
+        res1.jugador = nombre1;
         res1.juego = "AH";
         res1.resultado = adivino1 ? "G" : "P";
-        res1.puntos = puntosRonda1;
+        res1.puntos = adivino1 ? 10 : 0;
+        puntos1 += res1.puntos;
         resultados.push_back(res1);
-        delete ahorcado2;
     }
 
-    // Muestra los resultados finales y registra
-    cout << "\n=== RESULTADOS DE TODAS LAS RONDAS ===\n";
+    // Mostrar resumen y registrar
+    cout << "\n=== RESULTADOS ===\n";
     for (const auto& res : resultados) {
         registrarResultadoAhorcado(res);
-        cout << "[" << res.fecha << "] [" << res.jugador << "] [juego: AH] [resultado: " << res.resultado << "] [puntuacion: " << res.puntos << "]\n";
+        cout << "[" << res.fecha << "] [" << res.jugador << "] [juego: AH] [resultado: "
+             << res.resultado << "] [puntos: " << res.puntos << "]\n";
     }
-    cout << "\n=== RESULTADOS FINALES ===\n";
-    cout << nombreJugador1 << ": " << puntos1 << " puntos\n";
-    cout << nombreJugador2 << ": " << puntos2 << " puntos\n";
-    if (puntos1 > puntos2) {
-        cout << nombreJugador1 << " gana la partida!\n";
-    } else if (puntos2 > puntos1) {
-        cout << nombreJugador2 << " gana la partida!\n";
-    } else {
+
+    cout << "\nPuntaje Final:\n";
+    cout << nombre1 << ": " << puntos1 << " puntos\n";
+    cout << nombre2 << ": " << puntos2 << " puntos\n";
+
+    if (puntos1 > puntos2)
+        cout << nombre1 << " gana la partida!\n";
+    else if (puntos2 > puntos1)
+        cout << nombre2 << " gana la partida!\n";
+    else
         cout << "Empate!\n";
-    }
 }
 
-// Método para mostrar el estado actual del juego
-void Ahorcado::mostrarEstado()
-{
+// Muestra el estado actual de la palabra adivinada, letras usadas e intentos restantes
+void Ahorcado::mostrarEstado() {
     cout << "\nPalabra: ";
-    // Bucle for-each para mostrar la palabra adivinada hasta el momento
     for (char c : palabraAdivinada)
         cout << c << ' ';
     cout << "\nLetras usadas: ";
-    // Bucle for-each para mostrar las letras ya usadas
     for (char l : letrasUsadas)
         cout << l << ' ';
     cout << "\nIntentos restantes: " << intentos << endl;
 }
 
-// Método para verificar si una letra ya fue usada
-bool Ahorcado::letraYaUsada(char letra)
-{
-    // Bucle for-each para buscar la letra en el vector de letras usadas
-    for (char l : letrasUsadas)
-    {
+// Verifica si una letra ya fue utilizada previamente
+bool Ahorcado::letraYaUsada(char letra) {
+    for (char l : letrasUsadas) {
         if (l == letra) return true;
     }
     return false;
