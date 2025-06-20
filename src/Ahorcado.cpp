@@ -46,6 +46,10 @@ Ahorcado::Ahorcado(bool contraConsola) {
         string palabra;
 
         while (archivo >> palabra) {
+            // Convertir cada palabra a minúsculas antes de guardarla
+            for (char &c : palabra) {
+                c = tolower(c);
+            }
             palabras.push_back(palabra);
         }
         archivo.close();
@@ -56,6 +60,10 @@ Ahorcado::Ahorcado(bool contraConsola) {
         // Si es entre jugadores, uno de ellos ingresa la palabra secreta
         cout << "Ingrese la palabra secreta: ";
         cin >> palabraSecreta;
+        // Convertir palabra ingresada a minúsculas
+        for (char &c : palabraSecreta) {
+            c = tolower(c);
+        }
         cout << string(50, '\n'); // Limpia la pantalla para que el otro no vea
     }
 
@@ -78,6 +86,13 @@ void Ahorcado::jugar() {
         mostrarEstado(); // Muestra el avance del juego
         cout << "Ingresa una letra: ";
         cin >> letra;
+
+        // Validar entrada
+        if (!isalpha(letra)) {
+            cout << "Por favor ingresa solo letras del alfabeto.\n";
+            continue;
+        }
+        letra = tolower(letra); // Convertir a minúscula
 
         if (letraYaUsada(letra)) {
             cout << "Ya intentaste con esa letra.\n";
@@ -140,6 +155,13 @@ bool Ahorcado::jugarConUsuario(const string& nombreAdivina) {
         mostrarEstado();
         cout << nombreAdivina << ", escribe una letra: ";
         cin >> letra;
+
+        // Validar entrada
+        if (!isalpha(letra)) {
+            cout << "Por favor ingresa solo letras del alfabeto.\n";
+            continue;
+        }
+        letra = tolower(letra); // Convertir a minúscula
 
         if (letraYaUsada(letra)) {
             cout << "Esa ya la usaste.\n";

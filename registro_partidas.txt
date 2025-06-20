@@ -1,0 +1,2 @@
+[2025-06-20 16:55:01] [Franco] [juego: AH] [resultado: G] [puntuacion: 10]
+[2025-06-20 16:55:28] [Juan] [juego: AH] [resultado: G] [puntuacion: 10]
