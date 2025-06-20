@@ -14,7 +14,7 @@ public:
     Ahorcado(bool contraConsola);
     void jugar() override; // Ejecuta el juego
     bool jugarConUsuario(const string& nombreAdivina); // Devuelve true si gana, false si pierde
-    void jugarDosJugadores(); // Gestiona el modo dos jugadores con rondas y registro
+    void dosJugadores(); // Gestiona el modo dos jugadores con rondas y registro
     void mostrarEstado();
     bool letraYaUsada(char letra);
 

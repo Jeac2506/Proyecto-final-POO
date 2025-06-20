@@ -19,7 +19,7 @@ public:
     void jugar() override;
 
     // Método para jugar en modo dos jugadores
-    void jugarDosJugadores();
+    void dosJugadores();
 
 private:
     vector<string> simbolos;     // Vector que almacena los símbolos del tablero

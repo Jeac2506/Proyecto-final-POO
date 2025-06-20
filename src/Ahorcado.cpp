@@ -66,6 +66,7 @@ Ahorcado::Ahorcado(bool contraConsola){
 // Constructor por defecto
 Ahorcado::Ahorcado() {}
 
+
 // Método para jugar una partida de ahorcado (modo consola)
 void Ahorcado::jugar()
 {
@@ -173,7 +174,7 @@ bool Ahorcado::jugarConUsuario(const string& nombreAdivina){
 }
 
 // Método para jugar en modo dos jugadores
-void Ahorcado::jugarDosJugadores()
+void Ahorcado::dosJugadores()
 {
     string nombreJugador1, nombreJugador2;
     cout << "Ingrese el nombre del jugador 1: ";

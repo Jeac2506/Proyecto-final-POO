@@ -138,7 +138,7 @@ void Concentrese::jugar() {
 }
 
 // Lógica principal para jugar dos jugadores alternando turnos
-void Concentrese::jugarDosJugadores() {
+void Concentrese::dosJugadores() {
     string jugador1, jugador2;
     cout << "Nombre del jugador 1: ";
     cin >> jugador1;

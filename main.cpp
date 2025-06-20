@@ -59,7 +59,7 @@ int main()
                         juego.jugar();
                     } else if (modo == 2) {
                         // Modo dos jugadores
-                        Ahorcado().jugarDosJugadores();
+                        Ahorcado().dosJugadores();
                     } else if (modo != 0) {
                         cout << "Opcion invalida.\n";
                     }
@@ -88,7 +88,7 @@ int main()
                     } else if (modo == 2){
                         // Modo dos jugadores
                         Concentrese juego;
-                        juego.jugarDosJugadores();
+                        juego.dosJugadores();
                     } else if (modo != 0) {
                         cout << "Opcion invalida.\n";
                     }
