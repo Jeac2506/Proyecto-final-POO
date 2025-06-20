@@ -7,13 +7,15 @@ Este proyecto fue realizado por [nombres del grupo] como parte del curso de Prog
 ### 🔧 Cómo compilar
 
 ```bash
-g++ src/*.cpp -o juegos
+en terminal
+make para entrar
+make clean para limpiar registro
 ```
 
 ### ▶️ Cómo ejecutar
 
 ```bash
-./juegos
+./programa
 ```
 
 ### 📦 Estructura del proyecto
